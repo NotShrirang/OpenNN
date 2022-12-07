@@ -1,0 +1,12 @@
+LICENSE
+pyproject.toml
+setup.cfg
+src/nn/__init__.py
+src/nn/activations.py
+src/nn/layers.py
+src/nn/losses.py
+src/nn/models.py
+src/open_nn.egg-info/PKG-INFO
+src/open_nn.egg-info/SOURCES.txt
+src/open_nn.egg-info/dependency_links.txt
+src/open_nn.egg-info/top_level.txt
