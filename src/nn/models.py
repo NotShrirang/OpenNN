@@ -4,7 +4,7 @@ from . import losses
 import os
 
 class Sequential:
-    def __init__(self, layers: list[Layer], loss: losses.Loss = losses.CategoricalCrossentropy) -> None:
+    def __init__(self, layers: list, loss: losses.Loss = losses.CategoricalCrossentropy) -> None:
         self.layers = layers
         self.loss_function = loss
         self.__loss = 0
