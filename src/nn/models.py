@@ -4,7 +4,7 @@ from . import losses
 import os
 
 class Sequential:
-    def __init__(self, layers: list, loss: losses.Loss = losses.CategoricalCrossentropy) -> None:
+    def __init__(self, layers: list = [], loss: losses.Loss = losses.CategoricalCrossentropy) -> None:
         self.layers = layers
         self.loss_function = loss
         self.__loss = 0
@@ -16,6 +16,10 @@ class Sequential:
     @property
     def model_loss(self):
         return self.__least_loss
+
+    def add(self, layer: Layer):
+        self.layers.append(layer)
+        return len(self.layers)
 
     def fit(self, X, y, epoch: int, smooth_output: bool = False,  verbose: bool = False, iteration: int = 5000) -> list[float]:
         """Function for training neural network

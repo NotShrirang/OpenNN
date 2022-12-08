@@ -14,7 +14,10 @@ class Layer:
     def shape(self):
         return (self.__n_inputs, self.__n_neurons)
     
-    def forward():
+    def forward(self, inputs):
+        pass
+    
+    def backward(self, dvalues):
         pass
 
 class Layer_Dense(Layer):
@@ -27,3 +30,8 @@ class Layer_Dense(Layer):
 
     def forward(self, inputs):
         self.output = np.dot(inputs, self.weights) + self.biases
+    
+    def backward(self, dvalues):
+        self.dweights = np.dot(self.inputs.T, dvalues)
+        self.dbiases = np.sum(dvalues, axis=0, keepdims=True)
+        self.dinputs = np.dot(dvalues, self.weights.T)
