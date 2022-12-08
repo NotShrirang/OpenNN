@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://user-images.githubusercontent.com/85283622/206227131-e25b01d8-4c35-4770-a4e9-728655766858.png" width=900></a>
+  <img src="https://user-images.githubusercontent.com/85283622/206227131-e25b01d8-4c35-4770-a4e9-728655766858.png"></a>
 </div>
 
 # OpenNN
