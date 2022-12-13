@@ -1,10 +1,14 @@
 import numpy as np
 from . import activations
+from . import losses
 
 class Layer:
     def __init__(self, n_inputs, n_neurons, activation = activations.ReLU) -> None:
         self.weights = []
+        self.dweights = []
         self.biases = []
+        self.dbiases = []
+        self.dinputs = []
         self.activation = activation
         self.output = []
         self.__n_inputs = n_inputs
@@ -21,14 +25,15 @@ class Layer:
         pass
 
 class Layer_Dense(Layer):
-    def __init__(self, n_inputs, n_neurons, activation = activations.ReLU) -> None:
-        super().__init__(n_inputs, n_neurons, activation)
+    def __init__(self, n_inputs, n_neurons, activation) -> None:
+        # super().__init__(n_inputs, n_neurons, activation)
         np.random.seed(0)
         self.weights = 0.10 * np.random.randn(n_inputs, n_neurons)
         self.biases = np.zeros((1, n_neurons))
         self.activation = activation
 
     def forward(self, inputs):
+        self.inputs = inputs
         self.output = np.dot(inputs, self.weights) + self.biases
     
     def backward(self, dvalues):
