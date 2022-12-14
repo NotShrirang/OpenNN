@@ -3,7 +3,8 @@
 </div>
 
 # OpenNN
-A Neural Network implementation from scratch in Python
+A Neural Network implementation from scratch in Python.
+In this repository, Artificial Neural Networks are implemented from scratch. From scratch meaning without using external machine learning libraries. The API structure is similar to the Tensorflow Keras API.
 
 [![PyPI Latest Release](https://img.shields.io/pypi/v/open-nn-python.svg?style=flat&logo=pypi)](https://pypi.org/project/open-nn-python/)
 [![v0.2.2](https://img.shields.io/badge/version-v0.2.2-red.svg?style=flat&logo=numpy)](https://github.com/NotShrirang/OpenNN)
