@@ -3,7 +3,6 @@ from . import layers
 from . import losses
 from . import optimizers
 import os
-import copy
 
 class Sequential:
     def __init__(self, layers: list = [], loss: losses.Loss = losses.CategoricalCrossentropy) -> None:
@@ -38,35 +37,29 @@ class Sequential:
         self.iteration = iteration
         self.history = []
         whole_string = ""
-        self.__best_layers = []
+        _optimizer = optimizer
         for epoch_number in range(epoch):
             my_str = ""
-            optimizer = optimizer
             for i in range(self.iteration):
-                self.__current_layers = []
-                __layers = []
                 for count, layer in enumerate(self.layers):
                     if count == 0:
                         layer.forward(X)
-                        activation = layer.activation
-                        self.__output = activation.forward(activation, layer.output)
+                        layer.activation.forward(layer.output)
+                        self.__output = layer.activation.output
                     elif (count == (len(self.layers)-1)): # last layer
                         layer.forward(self.__output)
-                        loss_activation = layer.activation
-                        self.__loss = loss_activation.forward(layer.output, y)
-                        predictions = np.argmax(loss_activation.output, axis=1)
-                        if len(y.shape) == 2:
-                            y = np.argmax(y, axis=1)
-                        accuracy = np.mean(predictions==y)
-                        self.__accuracy = accuracy
-                        self.__output_after_forward_pass = loss_activation.output
+                        self.__loss = layer.activation.forward(layer.output, y)
+                        self.__output = layer.activation.output
                     else:
                         layer.forward(self.__output)
-                        activation = layer.activation
-                        self.__output = activation.forward(activation, layer.output)
-                        self.__output = activation.output
-                    __layers.append(copy.deepcopy(layer))
-                self.__current_layers.append(__layers)
+                        layer.activation.forward(layer.output)
+                        self.__output = layer.activation.output
+                
+                predictions = np.argmax(self.__output, axis=1)
+                if len(y.shape) == 2:
+                    y = np.argmax(y, axis=1)
+                accuracy = np.mean(predictions==y)
+                self.__accuracy = accuracy
 
                 # if not i % 100:
                 #     print(f'epoch: {i}, ' +
@@ -76,31 +69,30 @@ class Sequential:
 
                 for count, layer in enumerate(list(reversed(self.layers))):
                     if count == 0:
-                        loss_activation = layer.activation
-                        loss_activation.backward(self.__output_after_forward_pass, y)
-                        self.__dinputs = loss_activation.dinputs
+                        layer.activation.backward(self.__output, y)
+                        self.__dinputs = layer.activation.dinputs
                         layer.backward(self.__dinputs)
-                        self.first__dinputs = layer.dinputs
+                        self.__dinputs = layer.dinputs
                     else:
-                        activation = layer.activation
-                        activation.backward(activation, self.first__dinputs)
-                        layer.backward(activation.dinputs)
+                        layer.activation.backward(self.__dinputs)
+                        self.__dinputs = layer.activation.dinputs
+                        layer.backward(self.__dinputs)
                         self.__dinputs = layer.dinputs
 
-                _layers = optimizer.optimize(self.layers)
-                del self.layers
-                self.layers = _layers
+                _optimizer.pre_update_params()
+                for layer in self.layers:
+                    _optimizer.update_params(layer)
+                _optimizer.post_update_params()
                 
                 if self.__loss < self.__least_loss:
                     self.__least_loss = self.__loss
-                    self.__best_layers = copy.deepcopy(self.__current_layers)
 
                 if verbose:
                     if smooth_output:
                         perc_done = i / self.iteration
                         eq_count = int(perc_done * 50)
                         eq_left = 49 - eq_count
-                        my_str = f"Epoch {epoch_number+1}/{epoch}" + "[" + "="*eq_count + ">" + " "*eq_left + "] " + f"loss = {self.__loss :.4f}, {self.__accuracy = :.4f}"
+                        my_str = str("Epoch " + str(epoch_number+1) + " / " + str(epoch) + " [" + "="*eq_count + ">" + " "*eq_left + "] " +  "loss = " +  "{:.4f}".format(self.__loss) + " accuracy :" + "{:.4f}".format(self.__accuracy))
                         os.system('cls')
                         whole_string += my_str
                         print(whole_string)
@@ -110,14 +102,14 @@ class Sequential:
                             perc_done = i / self.iteration
                             eq_count = int(perc_done * 50)
                             eq_left = 49 - eq_count
-                            my_str = f"Epoch {epoch_number+1}/{epoch}" + "[" + "="*eq_count + ">" + " "*eq_left + "] " + f"loss = {self.__loss :.4f}, {self.__accuracy = :.4f}"
+                            my_str = str("Epoch " + str(epoch_number+1) + " / " + str(epoch) + " [" + "="*eq_count + ">" + " "*eq_left + "] " +  "loss = " +  "{:.4f}".format(self.__loss) + " accuracy :" + "{:.4f}".format(self.__accuracy))
                             os.system('cls')
                             whole_string += my_str
                             print(whole_string)
                             whole_string = whole_string[0:-len(my_str)]
 
             self.history.append(self.__loss)
-            print(f"Epoch {epoch_number+1}: loss = {self.__least_loss}")
+            print(str("Epoch " + str(epoch_number+1) + ": loss = " + str(self.__least_loss) + " accuracy = " + str(self.__accuracy)))
         return self.history
 
     def predict(self, X):
@@ -131,21 +123,25 @@ class Sequential:
         """
         predictions = []
         for x_point in X:
-            for count, layer in enumerate(self.__best_layers[0]):
+            for count, layer in enumerate(self.layers):
                 if count == 0:
-                    layer.forward(x_point)
-                    activation = layer.activation
-                    self.__output = activation.forward(activation, layer.output)
+                    layer.forward(X)
+                    _output = layer.output.copy()
+                    self.__output = layer.activation.forward(_output)
+                    self.__output = layer.activation.output
                 elif (count == (len(self.layers)-1)): # last layer
                     layer.forward(self.__output)
-                    loss_activation = layer.activation
-                    self.__loss = loss_activation.activation.forward(layer.output)
-                    prediction = np.argmax(self.__output, axis=1)
+                    _output = layer.output.copy()
+                    layer.activation.activation.forward(_output)
+                    __output = layer.activation.activation.output
+                    # prediction = np.argmax(self.__output, axis=1)
                 else:
                     layer.forward(self.__output)
+                    _output = layer.output.copy()
                     activation = layer.activation
-                    self.__output = activation.forward(activation, layer.output)
-            predictions.append(prediction)
+                    self.__output = activation.forward(_output)
+                    self.__output = activation.output
+            predictions.append(__output)
         return np.array(predictions)
 
     def save(self, name: str):
