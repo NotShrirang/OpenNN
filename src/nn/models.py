@@ -93,7 +93,10 @@ class Sequential:
                         eq_count = int(perc_done * 50)
                         eq_left = 49 - eq_count
                         my_str = str("Epoch " + str(epoch_number+1) + " / " + str(epoch) + " [" + "="*eq_count + ">" + " "*eq_left + "] " +  "loss = " +  "{:.4f}".format(self.__loss) + " accuracy :" + "{:.4f}".format(self.__accuracy))
-                        os.system('cls')
+                        if os.name == 'nt':
+                            os.system('cls')
+                        else:
+                            os.system('clear')
                         whole_string += my_str
                         print(whole_string)
                         whole_string = whole_string[0:-len(my_str)]
@@ -103,7 +106,10 @@ class Sequential:
                             eq_count = int(perc_done * 50)
                             eq_left = 49 - eq_count
                             my_str = str("Epoch " + str(epoch_number+1) + " / " + str(epoch) + " [" + "="*eq_count + ">" + " "*eq_left + "] " +  "loss = " +  "{:.4f}".format(self.__loss) + " accuracy :" + "{:.4f}".format(self.__accuracy))
-                            os.system('cls')
+                            if os.name == 'nt':
+                                os.system('cls')
+                            else:
+                                os.system('clear')
                             whole_string += my_str
                             print(whole_string)
                             whole_string = whole_string[0:-len(my_str)]
