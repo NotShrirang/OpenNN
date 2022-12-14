@@ -10,7 +10,7 @@ A Neural Network implementation from scratch in Python
 [![License: MIT](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat&logo=license)](https://github.com/NotShrirang/OpenNN/blob/main/LICENSE)
 [![Language: Python](https://img.shields.io/badge/language-python-blue.svg?style=flat&logo=python)](https://www.python.org/)
 
-## Installing pydbops with PyPI :
+## Installing OpenNN from PyPI :
 
 ```sh
 pip install open-nn-python
