@@ -20,22 +20,25 @@ class Sequential:
         self.layers.append(layer)
         return len(self.layers)
 
-    def fit(self, X, y, epoch: int, optimizer = optimizers.Adam(learning_rate=0.05, decay=5e-7), smooth_output: bool = False,  verbose: bool = False, iteration: int = 10000) -> list:
-        """Function for training neural network
+    def fit(self, X, y, epoch: int, optimizer = optimizers.Adam(learning_rate=0.05, decay=5e-7), smooth_output: bool = False,  verbose: bool = False, iteration: int = 10000, validation: tuple = (), callbacks: list = []) -> dict:
+        """Method for training the model
 
         Args:
-            X (list | arrayLike): data for training
-            y (list | arrayLike): prediction for training
-            epoch (int): epochs fof training
-            smooth_output (bool, optional): If True, outputs the training progressbar smoothly. Defaults to False.
-            verbose (bool, optional): If True, outputs the training progressbar. Defaults to False.
-            iteration (int, optional): Iteration to find best weights in a single epoch. Defaults to 5000.
+            X (arrayLike | numpy array): featureset
+            y (arrayLike | numpy array): classes
+            epoch (int): number of epochs
+            optimizer (Optimizer, optional): Optimizer for optimization. Defaults to optimizers.Adam(learning_rate=0.05, decay=5e-7).
+            smooth_output (bool, optional): Prints smoother output. Defaults to False.
+            verbose (bool, optional): Prints output. Defaults to False.
+            iteration (int, optional): number of iterations per epoch. Defaults to 10000.
+            validation (tuple, optional): validation testing. Defaults to ().
+            callbacks (list, optional): callbacks as EarlyStopping. Defaults to [].
 
         Returns:
-            list(float): The list of least loss at epoch
+            dict: dictionary of history of metrices
         """
         self.iteration = iteration
-        self.history = []
+        self.history = {'loss' : [], 'accuracy' : [], 'val_loss' : [], 'val_accuracy' : []}
         whole_string = ""
         _optimizer = optimizer
         for epoch_number in range(epoch):
@@ -113,10 +116,53 @@ class Sequential:
                             whole_string += my_str
                             print(whole_string)
                             whole_string = whole_string[0:-len(my_str)]
+            if validation != ():
+                whole_string = whole_string + str("Epoch " + str(epoch_number+1) + " / " + str(epoch) + " [" + "="*50 + "] " +  "loss = " +  "{:.4f}".format(self.__loss) + " accuracy :" + "{:.4f}".format(self.__accuracy))
+                ls, acc = self.__validate(validation[0], validation[1])
+                whole_string = whole_string + str(" val_loss = ") + "{:.4f}".format(ls) + " val_accuracy = " + "{:.4f}".format(acc) + "\n"
+                if os.name == 'nt':
+                    os.system('cls')
+                else:
+                    os.system('clear')
+                print(whole_string)
 
-            self.history.append(self.__loss)
-            print(str("Epoch " + str(epoch_number+1) + ": loss = " + str(self.__least_loss) + " accuracy = " + str(self.__accuracy)))
+                self.history['loss'].append(self.__loss)
+                self.history['accuracy'].append(self.__accuracy)
+                self.history['val_loss'].append(ls)
+                self.history['val_accuracy'].append(acc)
+            else:
+                whole_string = whole_string + str("Epoch " + str(epoch_number+1) + " / " + str(epoch) + " [" + "="*50 + "] " +  "loss = " +  "{:.4f}".format(self.__loss) + " accuracy :" + "{:.4f}".format(self.__accuracy) + "\n")
+                self.history['loss'].append(self.__loss)
+                self.history['accuracy'].append(self.__accuracy)
+            
+            if callbacks != []:
+                call_back = callbacks[0]
+                if call_back.check(self.__loss) == 1:
+                    break
+            # print(str("Epoch " + str(epoch_number+1) + ": loss = " + str(self.__least_loss) + " accuracy = " + str(self.__accuracy)))
         return self.history
+
+    def __validate(self, X_test, y_test) -> tuple():
+        __layers = self.layers
+        for count, layer in enumerate(__layers):
+            if count == 0:
+                layer.forward(X_test)
+                layer.activation.forward(layer.output)
+                __output = layer.activation.output
+            elif (count == (len(__layers)-1)): # last layer
+                layer.forward(__output)
+                __loss = layer.activation.forward(layer.output, y_test)
+                __output = layer.activation.output
+            else:
+                layer.forward(__output)
+                layer.activation.forward(layer.output)
+                __output = layer.activation.output
+        
+        predictions = np.argmax(__output, axis=1)
+        if len(y_test.shape) == 2:
+            y_test = np.argmax(y_test, axis=1)
+        __accuracy = np.mean(predictions==y_test)
+        return __loss, __accuracy
 
     def predict(self, X):
         """Function for predicions.
