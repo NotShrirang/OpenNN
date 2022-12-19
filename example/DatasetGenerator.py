@@ -1,4 +1,22 @@
-def Positive_Negative_data(points):
+import numpy as np
+import pandas as pd
+import random
+import math
+
+def sine_wave_data(points, classes):
+    X, Y = [], []
+    for class_number in range(1, classes+1):
+        for _ in range(int(points/3)):
+            x = random.random()*10
+            y = math.sin(class_number * x)
+            # print(n, x, y)
+            X.append((x, y))
+            Y.append(class_number - 1)
+
+    return np.array(X), np.array(Y)
+        
+
+def pn_data(points):
     X = np.zeros((points, 2))
     y = np.zeros(points, dtype='uint8')
     for ix in range(points):
