@@ -3,13 +3,31 @@ import pandas as pd
 import random
 import math
 
+def arithmetic_ops(points):
+    X, Y = [], []
+    classes = [0, 1, 2, 3]
+    for class_number in classes:
+        for _ in range(int(points/4)):
+            num1 = random.random()*10
+            num2 = random.random()*10
+            if class_number == 0:
+                op = num1 + num2
+            elif class_number == 1:
+                op = num1 - num2
+            elif class_number == 2:
+                op = num1 * num2
+            elif class_number == 3:
+                op = num1 / num2
+            X.append((num1, num2, op))
+            Y.append(class_number)
+    return np.array(X), np.array(Y)
+
 def sine_wave_data(points, classes):
     X, Y = [], []
     for class_number in range(1, classes+1):
         for _ in range(int(points/3)):
             x = random.random()*10
             y = math.sin(class_number * x)
-            # print(n, x, y)
             X.append((x, y))
             Y.append(class_number - 1)
 
