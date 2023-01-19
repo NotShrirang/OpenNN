@@ -47,7 +47,24 @@ def pn_data(points):
             X[ix] = np.c_[n1, n2]
             y[ix] = 1
     return X, y
-        
+
+def prime_data(points):
+    X, Y = [], []
+    X.extend([[2], [3], [4], [5], [6], [7], [8], [9]])
+    Y.extend([1, 1, 0, 1, 0, 1, 0, 0])
+    for x in range(10, points):
+        flag = True
+        for i in range(2, int(x/2)+1):
+            if x % i == 0:
+                flag = False
+            else:
+                pass
+        if flag:
+            Y.append(1)
+        else:
+            Y.append(0)
+        X.append([x])
+    return np.array(X), np.array(Y)
 
 def spiral_data(points, classes):
     X = np.zeros((points*classes, 2))
