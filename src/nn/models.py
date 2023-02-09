@@ -64,12 +64,6 @@ class Sequential:
                 accuracy = np.mean(predictions==y)
                 self.__accuracy = accuracy
 
-                # if not i % 100:
-                #     print(f'epoch: {i}, ' +
-                #         f'acc: {self.__accuracy:.3f}, ' +
-                #         f'loss: {self.__loss:.3f}, ' +
-                #         f'lr: {optimizer.current_learning_rate}')
-
                 for count, layer in enumerate(list(reversed(self.layers))):
                     if count == 0:
                         layer.activation.backward(self.__output, y)
