@@ -1,12 +1,14 @@
 import numpy as np
 
+
 class EarlyStopping:
-    def __init__(self, moniter = 'val_loss', min_delta: float = 0, patience: int = 0) -> None:
+    def __init__(self, moniter='val_loss', min_delta: float = 0, patience: int = 0) -> None:
         self.__moniter_metric = moniter
         self.__min_delta = min_delta
         self.__patience = patience
         self.__curr_epoch = 0
         self.__metric_list = []
+
     def check(self, loss):
         self.__metric_list.append(loss)
         self.__curr_epoch += 1
