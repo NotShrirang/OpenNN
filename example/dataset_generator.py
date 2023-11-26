@@ -1,7 +1,12 @@
+"""
+A collection of functions to generate datasets for testing and training.
+"""
+
+
 import numpy as np
-import pandas as pd
 import random
 import math
+
 
 def arithmetic_ops(points):
     X, Y = [], []
@@ -22,6 +27,7 @@ def arithmetic_ops(points):
             Y.append(class_number)
     return np.array(X), np.array(Y)
 
+
 def sine_wave_data(points, classes):
     X, Y = [], []
     for class_number in range(1, classes+1):
@@ -32,7 +38,7 @@ def sine_wave_data(points, classes):
             Y.append(class_number - 1)
 
     return np.array(X), np.array(Y)
-        
+
 
 def pn_data(points):
     X = np.zeros((points, 2))
@@ -47,6 +53,7 @@ def pn_data(points):
             X[ix] = np.c_[n1, n2]
             y[ix] = 1
     return X, y
+
 
 def prime_data(points):
     X, Y = [], []
@@ -66,26 +73,30 @@ def prime_data(points):
         X.append([x])
     return np.array(X), np.array(Y)
 
+
 def spiral_data(points, classes):
     X = np.zeros((points*classes, 2))
     y = np.zeros(points*classes, dtype='uint8')
     for class_number in range(classes):
         ix = range(points*class_number, points*(class_number+1))
         r = np.linspace(0.0, 1, points)  # radius
-        t = np.linspace(class_number*4, (class_number+1)*4, points) + np.random.randn(points)*0.2
+        t = np.linspace(class_number*4, (class_number+1)*4,
+                        points) + np.random.randn(points)*0.2
         X[ix] = np.c_[r*np.sin(t*2.5), r*np.cos(t*2.5)]
         y[ix] = class_number
     return X, y
 
+
 def vertical_data(samples, classes):
     X = np.zeros((samples*classes, 2))
     y = np.zeros(samples*classes, dtype='uint8')
-    data = []
     for class_number in range(classes):
         ix = range(samples*class_number, samples*(class_number+1))
-        X[ix] = np.c_[np.random.randn(samples)*.1 + (class_number)/3, np.random.randn(samples)*.1 + 0.5]
+        X[ix] = np.c_[np.random.randn(
+            samples)*.1 + (class_number)/3, np.random.randn(samples)*.1 + 0.5]
         y[ix] = class_number
     return X, y
+
 
 def linear_data(hm, variance, step=2, correlation=True):
     val = 1

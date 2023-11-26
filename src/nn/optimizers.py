@@ -1,5 +1,5 @@
-from . import layers
 import numpy as np
+from . import layers
 
 
 class Optimizer:

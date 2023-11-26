@@ -3,6 +3,15 @@ from . import losses
 
 
 class ReLU:
+    """
+    ReLU activation function
+
+    Attributes:
+        inputs (numpy.ndarray): The input values
+        output (numpy.ndarray): The output values
+        dinputs (numpy.ndarray): The derivative of the inputs
+    """
+
     def forward(self, inputs):
         self.inputs = inputs
         self.output = np.maximum(0, inputs)
