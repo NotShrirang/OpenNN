@@ -8,6 +8,8 @@ In this repository, Artificial Neural Networks are implemented from scratch. Fro
 
 [![PyPI Latest Release](https://img.shields.io/pypi/v/open-nn-python.svg?style=flat&logo=pypi)](https://pypi.org/project/open-nn-python/)
 [![v0.3.1](https://img.shields.io/badge/version-v0.3.1-red.svg?style=flat&logo=numpy)](https://github.com/NotShrirang/OpenNN)
+![Python Package](https://github.com/NotShrirang/OpenNN/actions/workflows/python-package.yml/badge.svg)
+![Python Package Publish](https://github.com/NotShrirang/OpenNN/actions/workflows/python-publish.yml/badge.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat&logo=license)](https://github.com/NotShrirang/OpenNN/blob/main/LICENSE)
 [![Language: Python](https://img.shields.io/badge/language-python-blue.svg?style=flat&logo=python)](https://www.python.org/)
 
